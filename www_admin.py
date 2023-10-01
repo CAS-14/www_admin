@@ -1,4 +1,4 @@
-from flask import request, redirect, url_for, g
+from flask import request, redirect, url_for, g, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
 import hmac
 import hashlib
@@ -13,6 +13,7 @@ PULL_DISABLED_MODULES = True
 PULL_OLD_REPO = True
 PULL_SELF = True
 RESTART_ON_WWW_PULL = False
+REGISTER_PULLED = True
 
 COMMANDS = {
     "stop": True
@@ -132,6 +133,9 @@ def github_webhook():
                             os.chdir(repo_path)
                             os.system("git pull")
                             os.chdir(old_dir)
+
+                            if REGISTER_PULLED:
+                                tools.register_module(current_app, bp.dir_name)
 
                         else:
                             tools.log("This module's repo must be cloned first!")
