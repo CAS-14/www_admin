@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>admin</title>
+</head>
+<body>
+    <h2>weirdcease Admin Panel</h2>
+    <p style="color: #ff4444;">Your activity on this page is being monitored.</p>
+    <table>
+        <tr>
+            <th>Visitor Info</th>
+        <tr>
+        <tr>
+            <td>{{ "IPv4 (Pseudo)" if data["ipv4_pseudo"] else "IPv4" }}</td>
+            <td>{{ data["ipv4"] }}</td>
+        </tr>
+        <tr>
+            <td>IPv6</td>
+            <td>{{ data["ipv6"] }}</td>
+        </tr>
+        <tr>
+            <td>Country</td>
+            <td>{{ data["country"] }}</td>
+        </tr>
+        <tr>
+            <th>Server Info</th>
+        </tr>
+        <tr>
+            <td>Temperature</td>
+            <td>{{ data["temperature"] }}&deg;C</td>
+        </tr>
+        <tr>
+            <td>Latest Commit</td>
+            <td>"{{ data["latest_commit"] }}"</td>
+        </tr>
+    </table>
+    <form action="{{ url_for('admin.logs') }}" method="post">
+        <input type="password" name="password" placeholder="log password">
+        <input type="submit" value="view logs">
+    </form>
+</body>
+</html>

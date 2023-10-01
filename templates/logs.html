@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>admin logs</title>
+</head>
+<body>
+    <h2>logs</h2>
+    <p>last 1000 only</p>
+    <table>
+        <tr>
+            <th>address</th>
+            <th>real address</th>
+            <th>time</th>
+            <th>method</th>
+            <th>path</th>
+            <th>status</th>
+            <th>res. length</th>
+            <th>referrer</th>
+            <th>user agent</th>
+        </tr>
+        {% for item in logs %}
+            <tr>
+                <td>{{ item.address }}</td>
+                <td>{{ item.real_address }}</td>
+                <td>{{ item.time|time }}</td>
+                <td>{{ item.method }}</td>
+                <td>{{ item.path }}</td>
+                <td>{{ item.status }}</td>
+                <td>{{ item.response_length }}</td>
+                <td>{{ item.referer }}</td>
+                <td>{{ item.user_agent }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
