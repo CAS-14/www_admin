@@ -92,7 +92,7 @@ def logs():
 @bp.route("/ghwebhook", methods=["POST"])
 def github_webhook():
     sig_header = request.headers.get("X-Hub-Signature-256")
-    payload = request.json()    
+    payload = request.json
     repo_info = payload.get("repository")
     cas_command = payload.get("cas-command")
 
