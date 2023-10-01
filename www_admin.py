@@ -22,8 +22,8 @@ ADMIN_IP = os.getenv("ADMIN_IP")
 LOGS_PW = os.getenv("LOGS_PASSWORD")
 GH_WEBHOOK_TOKEN = os.getenv("GH_WEBHOOK_TOKEN")
 
-admin = tools.MyBlueprint("admin", "www_admin", host="admin.act25.com", db="log", db_routes=["admin.logs"])
-tools.limiter.limit("100/hour")(admin)
+bp = tools.MyBlueprint("admin", "www_admin", host="admin.act25.com", db="log", db_routes=["admin.logs"])
+tools.limiter.limit("100/hour")(bp)
 
 def shutdown_gunicorn():
     # create a thread to return a response (so GitHub is happy) and start a 2s timer before exiting this app
@@ -43,7 +43,7 @@ class AccessLogItem:
         self.referer = referer
         self.user_agent = user_agent
 
-@admin.route("/")
+@bp.route("/")
 def home():
     data = {}
 
@@ -72,9 +72,9 @@ def home():
         if not data[key]:
             data[key] = "Not found"
 
-    return admin.render("admin.html", data=data)
+    return bp.render("admin.html", data=data)
 
-@admin.route("/logs", methods=["POST"])
+@bp.route("/logs", methods=["POST"])
 def logs():
     password = request.form.get("password")
     
@@ -86,10 +86,10 @@ def logs():
     for log_item_data in log_tuples:
         log_objects.append(AccessLogItem(*log_item_data))
 
-    return admin.render("logs.html", logs=log_objects)
+    return bp.render("logs.html", logs=log_objects)
 
 # thanks https://clement.notin.org/blog/2021/04/13/auto-deploy-python-flask-web-app-on-github-push/ 
-@admin.route("/ghwebhook", methods=["POST"])
+@bp.route("/ghwebhook", methods=["POST"])
 def github_webhook():
     sig_header = request.headers.get("X-Hub-Signature-256")
     payload = request.json()    
@@ -127,7 +127,7 @@ def github_webhook():
                         tools.log(f"WEBHOOK RECEIVED: `{repo_name}` - {'enabled' if modules[repo_name] else 'disabled'}, pulling{' anyway' if not modules[repo_name] else ''}...")
                         old_dir = os.getcwd()
                         repo_path = tools.path("modules", repo_name)
-                        
+
                         if os.path.isdir(repo_path):
                             os.chdir(repo_path)
                             os.system("git pull")
@@ -178,7 +178,7 @@ def github_webhook():
     
     return "hello you have reached bob, the webhook"
 
-@admin.after_request
+@bp.after_request
 def add_header(r):
     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
     r.headers["Pragma"] = "no-cache"
