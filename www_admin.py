@@ -104,7 +104,7 @@ def github_webhook():
     if repo_info:
         repo_name = repo_info.get("name")
         if repo_name:
-            head_commit = repo_info.get("head_commit")
+            head_commit = payload.get("head_commit")
             if head_commit:
                 latest_commit = head_commit.get("message")
 
